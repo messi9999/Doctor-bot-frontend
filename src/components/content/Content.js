@@ -20,7 +20,7 @@ import oxygen from '../../assets/images/oxygen.png';
 import './Content.css';
 import axios from 'axios'
 
-const BASE_URL = "http://localhost:5000/"
+const BASE_URL = "http://localhost/"
 
 // const theme =  createTheme({
 //     components: {
