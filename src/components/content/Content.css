@@ -1,8 +1,58 @@
+.bt-sche {
+    margin: 0px;
+    padding: 0px;
+    margin-top: 15px;
+    position: absolute;
+    right: 5px;
+    font-family: 'Source Sans Pro';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 18px;
+    line-height: 23px;
+    align-items: center;
+    gap: 13px;
+    color: #FFFFFF;
+    width: 151px;
+    height: 34px;
+    background: linear-gradient(180deg, #F3AB82 0%, #E78163 52.08%, #D26B51 99.99%, rgba(224, 119, 90, 0) 100%, rgba(225, 121, 92, 0.0416667) 100%);
+    border-radius: 4px;
+    border: none;
+}
+.bt-icon {
+    border: none;
+    position: absolute;
+    right: 20px;
+    background: #F3F3F3;
+}
+.tit-shape {
+    height: 56px;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    background: #F3F3F3;
+    border-bottom: 1px solid #CDCDCD;
+    border-radius: 4px 4px 0px 0px;
+    align-items: center;
+    margin-left: 10px;
+}
+.txt {
+    font-family: 'Source Sans Pro';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 18px;
+    line-height: 30px;
+    letter-spacing: 0.01em;
+    color: #707070;
+    margin-top: 3px;
+}
 .title{
-    color: rgba(0, 0, 0, 1); 
-    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;  
-    font-size: 28px;
-    font-weight: 700;
+    font-family: 'Source Sans Pro';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 26px;
+    line-height: 33px;
+    color: #212121;
+    margin: 0px;
     margin-top: 15px;
 }
 .p1 {
@@ -114,8 +164,8 @@ input {
     flex-direction: column;
 }
 .chatContainer {
-    height: calc(100vh - 150px);
-    margin-top: 70px;
+    height: calc(100vh - 180px);
+    margin-top: 110px;
 }
 .message {
     bottom: 10px;
@@ -124,14 +174,13 @@ input {
     max-width: 700px;
     /* margin: 0px auto; */
     margin-left: 20px;
-    margin-top: 5px;
-    margin-bottom: 5px;
     border-radius: 15px;
-    background: #087ff4;
-    color: white;
+    background: #ECECEC;
+    color: #111111;
     padding: 15px;
     font-weight: 10;
-    font-family: arial;
+    font-family: Source Sans Pro;
+    font-style: normal;
     position: relative;
     }
     
@@ -139,15 +188,14 @@ input {
     max-width: 600px;
     margin: 0px auto;
     margin-right: 20px;
-    margin-top: 5px;
-    margin-bottom: 5px;
     border-radius: 15px;
-    background: #8f5db7;
-    color: white;
+    background: #ECECEC;
+    color: #111111;
     padding: 15px;
     font-weight: 10;
     text-align: left;
-    font-family: arial;
+    font-family: Source Sans Pro;
+    font-style: normal;
     position: relative;
 }
 
@@ -159,9 +207,9 @@ input {
     width: 0px;
     height: 0px;
     position: absolute;
-    border-left: 15px solid #8f5db7;
+    border-left: 15px solid #ECECEC;
     border-right: 15px solid transparent;
-    border-top: 15px solid #8f5db7;
+    border-top: 15px solid #ECECEC;
     border-bottom: 15px solid transparent;
     right: -15px;
     top: 0px;
@@ -176,8 +224,8 @@ input {
     height: 0px;
     position: absolute;
     border-left: 15px solid transparent;
-    border-right: 15px solid #087ff4;
-    border-top: 15px solid #087ff4;
+    border-right: 15px solid #ECECEC;
+    border-top: 15px solid #ECECEC;
     border-bottom: 15px solid transparent;
     left: -15px;
     top: 0px;

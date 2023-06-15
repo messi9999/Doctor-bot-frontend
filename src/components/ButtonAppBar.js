@@ -1,11 +1,4 @@
 import * as React from "react";
-import AppBar from "@mui/material/AppBar";
-import Box from "@mui/material/Box";
-import Toolbar from "@mui/material/Toolbar";
-import Typography from "@mui/material/Typography";
-import Button from "@mui/material/Button";
-import IconButton from "@mui/material/IconButton";
-import MenuIcon from "@mui/icons-material/Menu";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { logout } from "../actions/auth";
@@ -21,58 +14,135 @@ export default function ButtonAppBar() {
   };
   return (
     <>
-      <Box sx={{ flexGrow: 1 }}>
-        <AppBar>
-          <Toolbar style={{ backgroundColor: "#1f151d" }}>
-            <Diversity1Icon style={{ marginRight: "8px", color: "#691622" }} />
-            <Typography
-              variant="h6"
-              component="div"
-              style={{ color: "#691622" }}
-              sx={{ flexGrow: 1 }}
-            >
-              Chat Doctor
-            </Typography>
+      <div>
+        <div>
+          <div
+            style={{
+              position: "absolute",
+              height: "98.83px",
+              left: "0px",
+              right: "0px",
+              top: "0px",
+              background: "#FFFFFF",
+              boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.13)",
+            }}
+          >
+            <Diversity1Icon
+              style={{
+                position: "absolute",
+                width: "103px",
+                height: "56.49px",
+                left: "80px",
+                top: "24px",
+                color: "#51BBD5",
+              }}
+            />
             {currentUser ? (
-              <div>
-                {/* <Button color="inherit">User Info</Button> */}
-                <label className="fs-2 me-5">{currentUser.username}</label>
-                <Button
-                  onClick={navigate("/profile")}
-                  style={{ color: "#b91d2a" }}
+              <div
+                style={{
+                  width: "300px",
+                  position: "absolute",
+                  right: "50px",
+                  top: "41.25px",
+                  display: "flex",
+                  justifyContent: "space-between",
+                }}
+              >
+                {/* <label className="fs-2 me-5">{currentUser.username}</label>
+                {console.log(currentUser)} */}
+                {currentUser.roles[0] === "ROLE_ADMIN" && (
+                  <button
+                    onClick={() => {
+                      navigate("/admin");
+                    }}
+                    style={{
+                      family: "Lato",
+                      style: "normal",
+                      weight: "600",
+                      color: "#51BBD5",
+                      border: "none",
+                      background: "white",
+                    }}
+                  >
+                    ADMIN
+                  </button>
+                )}
+                <button
+                  onClick={() => {
+                    navigate("/profile");
+                  }}
+                  style={{
+                    family: "Lato",
+                    style: "normal",
+                    weight: "600",
+                    color: "#51BBD5",
+                    border: "none",
+                    background: "white",
+                  }}
                 >
                   User Info
-                </Button>
-                <Button onClick={logOut} style={{ color: "#b91d2a" }}>
+                </button>
+                <button
+                  onClick={logOut}
+                  style={{
+                    family: "Lato",
+                    style: "normal",
+                    weight: "600",
+                    color: "#51BBD5",
+                    border: "none",
+                    background: "white",
+                  }}
+                >
                   SignOut
-                </Button>
+                </button>
               </div>
             ) : (
-              <div>
+              <div
+                style={{
+                  width: "150px",
+                  position: "absolute",
+                  right: "50px",
+                  top: "41.25px",
+                  display: "flex",
+                  justifyContent: "space-between",
+                }}
+              >
                 {/* <Button onClick={()=>{navigate('/login')}} color="primary" sx={{borderRadius:"15px", background:"white"}}>Get Started</Button> */}
-                <Button
+                <button
                   onClick={() => {
                     navigate("/login");
                   }}
-                  color="inherit"
-                  style={{ color: "#b91d2a" }}
+                  style={{
+                    family: "Lato",
+                    style: "normal",
+                    weight: "600",
+                    color: "#51BBD5",
+                    border: "none",
+                    background: "white",
+                  }}
                 >
                   Login
-                </Button>
-                <Button
+                </button>
+                <button
                   onClick={() => {
                     navigate("/register");
                   }}
-                  color="inherit"
-                  style={{ color: "#b91d2a" }}
+                  style={{
+                    family: "Lato",
+                    style: "normal",
+                    weight: "600",
+                    color: "#51BBD5",
+                    border: "none",
+                    background: "white",
+                  }}
                 >
                   Signup
-                </Button>
+                </button>
               </div>
             )}
-          </Toolbar>
-        </AppBar>
-      </Box>
+          </div>
+        </div>
+      </div>
     </>
   );
 }

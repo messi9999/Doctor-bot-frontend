@@ -1,14 +1,15 @@
-import logo from './logo.svg';
-import './App.css';
-import { BrowserRouter, Route, Routes, useLocation } from 'react-router-dom';
-import Homescreen from './screen/Homescreen';
-import Maindashborad from './screen/Maindashborad';
-import LogIn from './components/Login';
-import Register from './components/Register';
-import { useEffect, useState } from 'react';
-import { CLEAR_MESSAGE } from './actions/types';
+import logo from "./logo.svg";
+import "./App.css";
+import { BrowserRouter, Route, Routes, useLocation } from "react-router-dom";
+import Homescreen from "./screen/Homescreen";
+import Maindashborad from "./screen/Maindashborad";
+import LogIn from "./components/Login";
+import Register from "./components/Register";
+import { useEffect, useState } from "react";
+import { CLEAR_MESSAGE } from "./actions/types";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch, useSelector } from "react-redux";
+import Adminboard from "./components/Adminboard";
 
 function App() {
   const [showAdminBoard, setShowAdminBoard] = useState(false);
@@ -33,12 +34,13 @@ function App() {
   }, [currentUser]);
 
   return (
-    <div className='App'>
+    <div className="App">
       <Routes>
-        <Route path="/" element={< Homescreen />} />
+        <Route path="/" element={<Homescreen />} />
         <Route path="/main" element={<Maindashborad />} />
         <Route path="/login" element={<LogIn />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/admin" element={<Adminboard />} />
       </Routes>
     </div>
   );
