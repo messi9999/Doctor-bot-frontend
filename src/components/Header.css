@@ -1,0 +1,51 @@
+.header-main {
+    height: 98.83px;
+    background: #FFFFFF;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.13);
+    padding-top: 20px;
+}
+
+.header-sub-div {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    /* gap: 873px; */
+    width: auto;
+    margin-left: 80px;
+    margin-right: 80px;
+}
+
+.header-main label {
+    height: 56.49px;
+    font-family: 'Lato';
+    font-style: normal;
+    font-weight: 900;
+    font-size: 36px;
+    line-height: 43px;
+    color: #111111;
+}
+
+.header-nav-btn {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 40px;
+    height: 56px;
+}
+
+.header-nav-btn nav {
+    color: #111111;
+}
+
+.header-login-btn {
+    width: 180px;
+    height: 56px;
+    background: linear-gradient(180deg, #F3AB82 0%, #E78163 52.08%, #D26B51 99.99%, rgba(224, 119, 90, 0) 100%, rgba(225, 121, 92, 0.0416667) 100%);
+    font-family: 'Lato';
+    font-style: normal;
+    font-weight: 700;
+    font-size: 20px;
+    line-height: 24px;
+}

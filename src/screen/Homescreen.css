@@ -1,0 +1,29 @@
+/* .background-image {
+  background-image: url(../assets/images/m_bg2.jpg);
+  background-size: cover;
+  background-position: top;
+  min-height: 100%;
+  height: 100vh;
+  position: relative;
+} */
+.btn-home {
+  position: absolute;
+  top: 95%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  -ms-transform: translate(-50%, -50%);
+  background-color: #247c80;
+  color: white;
+  font-size: 24px;
+  padding: 16px 30px;
+  border: none;
+  cursor: pointer;
+  border-radius: 15px;
+  text-align: center;
+}
+
+.btn-home:hover {
+  background-color: #6fb9c4;
+  color: black;
+  /* font-weight: bold; */
+}

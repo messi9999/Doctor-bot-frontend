@@ -1,22 +1,15 @@
+import "./Login.css";
 import React, { useState, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Navigate, useNavigate } from "react-router-dom";
 
-import Form from "react-validation/build/form";
-import Input from "react-validation/build/input";
-import CheckButton from "react-validation/build/button";
-
 import { login } from "../actions/auth";
-
-const required = (value) => {
-  if (!value) {
-    return (
-      <div className="alert alert-danger" role="alert">
-        This field is required!
-      </div>
-    );
-  }
-};
+import { isEmail } from "validator";
+import { ReactComponent as MainLogo } from "../assets/logos/LOGO.svg";
+import { ReactComponent as GoogleLogo } from "../assets/logos/GoogleVector.svg";
+import { ReactComponent as LineLogo } from "../assets/logos/LineLogo.svg";
+import { Box, TextField } from "@mui/material";
+import { Button } from "react-bootstrap";
 
 const Login = (props) => {
   let navigate = useNavigate();
@@ -29,18 +22,18 @@ const Login = (props) => {
   const [loading, setLoading] = useState(false);
 
   const { isLoggedIn } = useSelector((state) => state.auth);
-  const { message } = useSelector((state) => state.message);
+  // const { message } = useSelector((state) => state.message);
 
   const dispatch = useDispatch();
 
   const onChangeUsername = (e) => {
-    const username = e.target.value;
-    setUsername(username);
+    e.preventDefault();
+    setUsername(e.target.value);
   };
 
   const onChangePassword = (e) => {
-    const password = e.target.value;
-    setPassword(password);
+    e.preventDefault();
+    setPassword(e.target.value);
   };
 
   const handleLogin = (e) => {
@@ -71,66 +64,66 @@ const Login = (props) => {
   return (
     <div className="col-md-12">
       <div className="card card-container">
-        <img
-          src="//ssl.gstatic.com/accounts/ui/avatar_2x.png"
-          alt="profile-img"
-          className="profile-img-card"
-        />
+        <MainLogo className="profile-img-card" />
+        <div className="login-switch-btn">
+          <a href="/login" className="switch-login">
+            LOGIN
+          </a>
+          <a href="/register" className="switch-register">
+            CREATE ACCOUNT
+          </a>
+        </div>
 
-        <Form onSubmit={handleLogin} ref={form}>
-          <div className="form-group">
-            <label htmlFor="username">Username</label>
-            <Input
-              type="text"
-              className="form-control"
-              name="username"
-              value={username}
+        <div className="google-login">
+          <div>
+            <GoogleLogo className="goolge-logo" />
+            <label>LOGIN WITH GOOGLE</label>
+          </div>
+        </div>
+
+        <div className="line-logo">
+          <LineLogo />
+        </div>
+        <Box
+          component="form"
+          sx={{
+            "& > :not(style)": { m: 1 }
+          }}
+          noValidate
+          autoComplete="off"
+        >
+          <div style={{ margin: "0px" }}>
+            <TextField
+              label="Email"
+              color="grey"
+              focused
+              fullWidth
+              type="email"
+              placeholder="Enter your email"
+              sx={{ marginTop: "48px", color: "#ADADAD;" }}
               onChange={onChangeUsername}
-              validations={[required]}
             />
           </div>
-
-          <div className="form-group">
-            <label htmlFor="password">Password</label>
-            <Input
+          <div style={{ margin: "0px" }}>
+            <TextField
+              label="Password"
+              color="grey"
+              focused
+              fullWidth
               type="password"
-              className="form-control"
-              name="password"
-              value={password}
+              placeholder="Enter your password"
+              sx={{ marginTop: "31px", color: "#ADADAD;" }}
               onChange={onChangePassword}
-              validations={[required]}
             />
           </div>
-
-          <div className="form-group">
-            <button
-              className="btn btn-primary btn-block mt-3 float-end"
-              disabled={loading}
-            >
-              {loading && (
-                <span className="spinner-border spinner-border-sm"></span>
-              )}
-              <span>Login</span>
-            </button>
-            <button
-              className="btn btn-sm btn-white border-0 text-decoration-underline mt-4"
-              onClick={() => {
-                navigate("/register");
-              }}
-            >
-              Don't Have an account? Register here
-            </button>
-          </div>
-
-          {message && (
-            <div className="form-group">
-              <div className="alert alert-danger" role="alert">
-                {message}
-              </div>
-            </div>
-          )}
-          <CheckButton style={{ display: "none" }} ref={checkBtn} />
-        </Form>
+        </Box>
+        <Button
+          className="login-btn"
+          onClick={handleLogin}
+          disabled={loading || !isEmail(username) || password === ""}
+        >
+          LOGIN
+        </Button>
       </div>
     </div>
   );

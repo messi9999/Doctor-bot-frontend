@@ -1,405 +1,890 @@
-// import Options from "./option/Options"
-// import Chat from "./chat/Chat"
+import React from "react";
 
-import React, { useEffect, useState, useRef } from 'react'
-import SendIcon from '@mui/icons-material/Send';
-import SettingsAccessibilityRoundedIcon from '@mui/icons-material/SettingsAccessibilityRounded';
-import AdbRoundedIcon from '@mui/icons-material/AdbRounded';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import { Box, Button, InputAdornment, Slider, Stack, TextField, ThemeProvider, createTheme } from '@mui/material';
-import FilterTiltShiftRoundedIcon from '@mui/icons-material/FilterTiltShiftRounded';
-import MedicalInformationIcon from '@mui/icons-material/MedicalInformation';
-import MonitorHeartIcon from '@mui/icons-material/MonitorHeart';
-import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
-import ThermostatIcon from '@mui/icons-material/Thermostat';
-import TrendingDownIcon from '@mui/icons-material/TrendingDown';
-import EqualizerIcon from '@mui/icons-material/Equalizer';
-import chart from '../../assets/images/chart1.png';
-import breath from '../../assets/images/breath.png';
-import oxygen from '../../assets/images/oxygen.png';
-import './Content.css';
-import axios from 'axios'
+import "./Content.css";
+import "bootstrap/dist/css/bootstrap.min.css";
+import Chatanswer from "../Chatanswer";
+import Chatquestion from "../Chatquestion";
 
-const BASE_URL = "http://localhost:5000/"
+import { ReactComponent as SendVector } from "../../assets/logos/SendVector.svg";
+import { ReactComponent as BookLogo } from "../../assets/logos/BookLogo.svg";
+import { ReactComponent as WarningLogo } from "../../assets/logos/WarningLogo.svg";
+import { ReactComponent as MedicalLogo } from "../../assets/logos/MedicalLogo.svg";
+import { ReactComponent as CoreLogo } from "../../assets/logos/CoreLogo.svg";
+import { ReactComponent as VitalsLogo } from "../../assets/logos/VitalsLogo.svg";
+import { ReactComponent as LabLogo } from "../../assets/logos/LabLogo.svg";
+import { ReactComponent as DropVector } from "../../assets/logos/DropVector.svg";
+import { ReactComponent as ScheduleBtn } from "../../assets/logos/ScheduleBtn.svg";
+import { ReactComponent as ScheduleVector } from "../../assets/logos/ScheduleVector.svg";
+import { ReactComponent as CalendarVector } from "../../assets/logos/CalendarVector.svg";
 
-// const theme =  createTheme({
-//     components: {
-//       MuiButton: {
-//         styleOverrides: {
-//             root: {
-//             marginLeft: "30px",
-//             },
-//         },
-//       },
-//     },
-// });
+import { useState } from "react";
+import { useEffect, useRef } from "react";
 
-const marks = {
-    "marks": [
-        {
-          value: 0,
-          label: '0°C',
-        },
-        {
-          value: 20,
-          label: '20°C',
-        },
-        {
-          value: 36.5,
-          label: '36.5°C',
-        },
-        {
-          value: 50,
-          label: '50°C',
-        },
-    ]
-}
-  
-function valuetext(value) {
-    return `${value}°C`;
-}
-  
+import { Box, InputAdornment, TextField } from "@mui/material";
+
+import Calendar from "react-calendar";
+import "react-calendar/dist/Calendar.css";
+
+// const BASE_URL = "http://localhost:5000/";
+
+const res = {
+  data: {
+    numSMS: 10,
+    answer: "How are you?"
+  }
+};
+
+const sleep = (time) => {
+  return new Promise((resolve) => setTimeout(resolve, time));
+};
 
 const Content = () => {
-    const ref = useRef();
-    const [chats, setChats] = useState([])
-    const [ques, setQues] = useState("")
+  const [numSms, setNumSms] = useState(0);
+  const [question, setQuestion] = useState("");
+  const [tques, setTques] = useState("");
+  const [answer, setAnswer] = useState("");
+  const [chats, setChats] = useState([]);
+  const [iswaiting, setIswaiting] = useState(false);
 
-    const [isquestion, setIsquestion] = useState(false) 
+  const [isSchedule, setIsSchedule] = useState(false);
+  const [iscore, setIscore] = useState(false);
+  const [isvitals, setIsvitals] = useState(false);
+  const [islab, setIslab] = useState(false);
 
-    const handleOnChange = (e) => {
-        e.preventDefault();
-        setQues(e.target.value)
-    }
+  const [date, setDate] = useState(new Date());
 
-    const handleSubmit = async () => {
-        const chat = {
-            "isquestion": true,
-            "content": ques
-        }
-        // setIsquestion(true)
- 
-        setChats(prevChats => [...prevChats, chat])
+  const ref = useRef();
+  const ref2 = useRef();
+  const scrollToBottom1 = () => {
+    ref.current.scrollIntoView({ behavior: "smooth" });
+  };
+  const scrollToBottom2 = () => {
+    ref2.current.scrollIntoView({ behavior: "smooth" });
+  };
+  useEffect(() => {
+    setAnswer(res.data.answer);
+    scrollToBottom1();
+  }, [chats]);
+  useEffect(() => {
+    scrollToBottom2();
+  }, [question]);
 
-        
+  useEffect(() => {
+    const textarea = document.getElementById("myTextarea");
+    const content = document.getElementById("content");
 
-        /////
-        const body = {
-            "question" : ques,
-            "info" : {
-                "temperature": temperature,
-                "heartRate" : heartRate,
-                "breathRate" : breathRate,
-                "age":age,
-                "heightA": heightA,
-                "heightB": heightB,
-                "weight": weight,
-                "allergies": allergies,
-                "medications": medications,
-                "symptoms": symptoms,
-                "oxygenPro": oxygenPro
-            }
-        }
-        // axios
+    const adjustTextareaHeight = () => {
+      textarea.style.height = "auto"; // Reset the height to auto
+      textarea.style.height = `${textarea.scrollHeight}px`; // Set the height to match the content
 
-        const res = await axios.post(BASE_URL+"api/article", body)
-        // setIsquestion(false)
-        const chat1 = {
-            "isquestion": false,
-            "content": res.data.answers
-        }
+      content.style.height = "auto"; // Reset the height to auto
+      content.style.height = `${content.scrollHeight}px`; // Set the height to match the content
+    };
 
-        setChats(prevChats => [...prevChats, chat1])
-       
-        setQues('')
-    }
+    textarea.addEventListener("input", adjustTextareaHeight);
 
-    useEffect(() => {
-        const keyDownHandler = event => {
+    return () => {
+      textarea.removeEventListener("input", adjustTextareaHeight);
+    };
+  }, []);
 
-        if (event.key === 'Enter') {
-            
-            event.preventDefault();
+  const handleOnInputChange = (e) => {
+    e.preventDefault();
+    setQuestion(e.target.value);
+    setTques(e.target.value);
+  };
 
-            // 👇️ call submit function here
-            handleSubmit();
-        }
-        };
+  const handleOnSend = async () => {
+    setIswaiting(true);
+    const chat_question = {
+      key: false,
+      content: question
+    };
+    setQuestion("");
+    setChats((chats) => [...chats, chat_question]);
 
-        document.addEventListener('keydown', keyDownHandler);
+    /*
+    Axios here
+    */
 
-        return () => {
-        document.removeEventListener('keydown', keyDownHandler);
-        };
-    }, [ques]);
+    await sleep(1000);
+    setNumSms(res.data.numSMS);
+    setAnswer(res.data.answer);
+    await sleep(500);
 
-    const scrollToBottom = () => {
-        ref.current.scrollIntoView({ behavior: "smooth" });
-    }
+    const chat_answer = {
+      key: true,
+      content: answer
+    };
+    setChats((chats) => [...chats, chat_answer]);
+    setIswaiting(false);
+  };
 
-    useEffect(()=> {
-        scrollToBottom()
-    }, [chats])
-
-    const [age, setAge] = useState("");
-    const [weight, setWeight] = useState("");
-    const [heightA, setHeightA] = useState("");
-    const [heightB, setHeightB] = useState("");
-    const [symptoms, setSymptoms] = useState("");
-    const [allergies, setAllergies] = useState("");
-    const [medications, setMedications] = useState("");
-    const [heartRate, setHeartRate] = useState("120");
-    const [breathRate, setBreathRate] = useState("12");
-    const [oxygenPro, setOxygenPro] = useState("95");
-    const [temperature, setTemperature] = useState("36.5");
-  
-    // const handleOnchange = (e) => {
-    //   setHeartRate(e.target.value);
-    // }
-
-    return (
-        <div className="row" style={{width:"100%"}}>
-            <div className="col-7 p-0" >
-                <div className="bg-white m-lg-3" >      
-                    <div className='chatContainer' style={{overflowY: "auto"}}>
-                        {chats.map((chat, index) => (
-                            <div key={index} className='chatbox'>
-                            {chat.isquestion ? (                 
-                                <div className='chatq'>
-                                    <div className='box4 sb13'>{chat.content}</div>
-                                    {' '} :
-                                    <SettingsAccessibilityRoundedIcon color="primary" fontSize="large" />
-                                </div> 
-                            ) : (                  
-                                <div className='chata'>
-                                    <AdbRoundedIcon color="primary" fontSize="large" />
-                                    {' '} :
-                                    <div className='box3 sb14'>{chat.content}</div>
-                                </div>
-                            )}
-                            </div>
-                        ))}
-                        <div ref={ref}></div>
-                        
+  return (
+    <>
+      <div id="content" className="row p-0">
+        <div className="chat-content col-8 p-0">
+          <div className="chat-show">
+            {chats.map((chat, index) => {
+              return (
+                <div key={index}>
+                  {chat.key ? (
+                    <div>
+                      <Chatanswer content={chat.content} />
                     </div>
-                    <div className="d-flex position-fixed message" style={{width: "58%"}} >
-                        <TextField id="outlined-basic"  label="Send a message." variant="outlined" sx={{width: "80%", marginLeft: "30px"}} value={ques} onChange={(e) => {handleOnChange(e)}} />
-                        {/* <ThemeProvider theme={theme}> */}
-                            <Button onClick={handleSubmit} variant="contained" endIcon={<SendIcon />}>
-                                Send
-                            </Button>
-                        {/* </ThemeProvider> */}
-                    </div>
+                  ) : (
+                    <Chatquestion content={chat.content} />
+                  )}
                 </div>
+              );
+            })}
+            <div ref={ref} />
+          </div>
+          <div className="chat-credit-tip">
+            <span style={{ marginRight: "20px" }}>
+              <WarningLogo />
+            </span>
+            <span>{numSms}&nbsp;</span>
+            <label>messages left.&nbsp;</label>
+            <a href="/register">Signup for free</a>
+
+            <label>
+              &nbsp;to send more messages. Message limits will reset on the
+              first day of each month.
+            </label>
+          </div>
+          <div className="chat-question d-flex flex-row justify-content-between align-items-end gap-2">
+            <div className="chat-ques-input">
+              <textarea
+                id="myTextarea"
+                rows={1}
+                onChange={handleOnInputChange}
+                placeholder="Send message"
+                value={question}
+                onKeyPress={(e) => {
+                  if (e.key === "Enter" && !e.shiftKey) {
+                    if (
+                      !iswaiting ||
+                      !(tques.replace(/(\r\n|\n|\r)/gm, "").trim() === "")
+                    ) {
+                      handleOnSend();
+                    }
+                  }
+                }}
+              />
             </div>
-            <div className="col-5 p-0" style={{position: "fixed", top:"64px", right: "0px"}} >
-                <div className="bg-white mx-3 wrapper">
-                    {/* <div className="row">
-                        <div className='title'>
-                        <MedicalInformationIcon color="primary" />
-                        {' '}Medical Information           
-                        </div>
-                        <p className='p1'>provide your medical information for more personalized and informative suggestions.</p>
-                        <div className="row">
-                        <Stack spacing={0} direction="row"> 
-                            <Button variant="outlined" sx={{fontSize: '1rem'}} fullWidth={true}>IMPORIAL</Button>
-                            <Button variant="outlined" sx={{fontSize: '1rem'}} fullWidth={true}>METRIC(S1)</Button>
-                        </Stack>
-                        </div>
-                    </div> */}
-                    <div className="row">
-                        <div className='title'>
-                        <FilterTiltShiftRoundedIcon color="primary"/>
-                        {' '}Core
-                        </div>
-                        <div className='row spc'>
-                            <div className='col-6'>
-                                <TextField
-                                value={age}
-                                onChange={(e) =>{setAge(e.target.value);}}
-                                label="Age"
-                                id="outlined-start-adornment"
-                                fullWidth={true}
-                                // sx={{ marginTop: "10px" }}
-                                InputProps={{
-                                    endAdornment: <InputAdornment position="start">yr</InputAdornment>,
-                                }}
-                                />
-                            </div>
-                            <div className='col-6'>
-                                <TextField
-                                value={weight}
-                                onChange={(e) =>{setWeight(e.target.value);}}
-                                label="Weight"
-                                id="outlined-start-adornment"
-                                fullWidth={true}
-                                // sx={{ m: 1, width: '25ch' }}
-                                InputProps={{
-                                    endAdornment: <InputAdornment position="start">lb</InputAdornment>,
-                                }}
-                                />
-                            </div>
-                        </div>
-                        <div className='row spc'>
-                            <div className="col-3">
-                                <TextField
-                                value={heightA}
-                                onChange={(e) =>{setHeightA(e.target.value);}}
-                                label="Height"
-                                id="outlined-start-adornment"
-                                fullWidth={true}
-                                // sx={{ m: 1, width: '25ch' }}
-                                InputProps={{
-                                    endAdornment: <InputAdornment position="start">ft</InputAdornment>,
-                                }}
-                                />
-                            </div>
-                            <div className="col-3">
-                                <TextField
-                                value={heightB}
-                                onChange={(e) =>{setHeightB(e.target.value);}}
-                                // label="Age"
-                                id="outlined-start-adornment"
-                                fullWidth={true}
-                                InputProps={{
-                                    endAdornment: <InputAdornment position="start">in</InputAdornment>,
-                                }}
-                                />
-                            </div>
-                            <div className="col-6">
-                                <TextField
-                                value={symptoms}
-                                onChange={(e) =>{setSymptoms(e.target.value);}}
-                                id="filled-multiline-flexible"
-                                fullWidth={true}
-                                label="Symptoms"
-                                multiline
-                                maxRows={4}
-                                variant="filled"
-                                />
-                            </div>
-                        </div>
-                        <div className='row spc'>
-                            <div className="col-6">
-                                <TextField
-                                value={allergies}
-                                onChange={(e) =>{setAllergies(e.target.value);}}
-                                id="filled-multiline-flexible"
-                                fullWidth={true}
-                                label="Allergies"
-                                multiline
-                                maxRows={4}
-                                variant="filled"
-                                />
-                            </div>
-                            <div className="col-6">
-                                <TextField
-                                value={medications}
-                                onChange={(e) =>{setMedications(e.target.value);}}
-                                id="filled-multiline-flexible"
-                                fullWidth={true}
-                                label="Medications"
-                                multiline
-                                maxRows={4}
-                                variant="filled"
-                                />
-                            </div>
-                        </div>
-                    </div>
-                    <div className="row">
-                        <div className='title'>
-                        <MonitorHeartIcon color="primary" />
-                        {' '}Patients body stats
-                        </div>
-                        <div className="row spc">
-                        <div className="col-6 ">
-                            <div className='d-flex'>
-                            <ThermostatIcon color='primary' fontSize='large' />
-                            <h4>Temperature</h4>
-                            </div>
-                            <div className="slider">
-                                <Slider
-                                    value={temperature}
-                                    onChange={(e) => {setTemperature(e.target.value);}}
-                                    className="slider"
-                                    max={50}
-                                    aria-label="Always visible"
-                                    // defaultValue={36.5}
-                                    getAriaValueText={valuetext}
-                                    step={0.1}
-                                    marks={marks.marks}
-                                    valueLabelDisplay="on"
-                                />
-                            </div>
-                        </div>
-                        <div className="col-6 heart_container" style={{borderRadius: "20px", background: "#f0f0f0", marginLeft: "0px"}}>
-                            <div className='d-flex'>
-                            <div className='heart'> 
-                                <FavoriteBorderIcon className='icon'/>
-                            </div>
-                            <div className='heart_letter'>
-                                <h4>Heart Rate</h4>
-                                <h4>{heartRate}bpm</h4>
-                            </div>
-                            </div>
-                            <div className='d-flex m-2 '>
-                            <div className='chart w-100 justify-content-between'>
-                                <img src={chart} width="70%" height="60px" style={{marginTop: "35px", marginBottom: "35px"}}/>
-                                <div className='rate_input'>
-                                <input type='text' value={heartRate} onChange={(e) =>{setHeartRate(e.target.value);}} className='rate_text'/>
-                                <h4 style={{padding:"0", margin:"0", color:"white"}}>bpm</h4>
-                                </div>
-                            </div>
-                            </div>
-                        </div>
-                        </div>
-                        <div className='row'>
-                        <div className="col-6 heart_container" style={{borderRadius: "20px", background: "#f0f0f0", marginLeft: "0px"}}>
-                            <div className='d-flex'>
-                            <div className='heart breath'> 
-                                <TrendingDownIcon className='iconb'/>
-                            </div>
-                            <div className='heart_letter'>
-                                <h4>Respiratory Rate</h4>
-                                <h4>{breathRate}/min</h4>
-                            </div>
-                            </div>
-                            <div className='d-flex m-2 '>
-                            <div className='chart w-100 justify-content-between'>
-                                <img src={breath} width="70%" height="60px" style={{marginTop: "35px", marginBottom: "35px"}}/>
-                                <div className='rate_input breath_input'>
-                                <input type='text' value={breathRate} onChange={(e) =>{setBreathRate(e.target.value);}} className='rate_text breath_text'/>
-                                <h4 style={{padding:"0", margin:"0", color:"black"}}>/min</h4>
-                                </div>
-                            </div>
-                            </div>
-                        </div>
-                        <div className="col-6 heart_container" style={{borderRadius: "20px", background: "#f0f0f0", marginLeft: "0px"}}>
-                            <div className='d-flex'>
-                            <div className='heart breath'> 
-                                <EqualizerIcon className='iconb'/>
-                            </div>
-                            <div className='heart_letter'>
-                                <h4>Oxygen Saturation</h4>
-                                <h4>{oxygenPro}{'(%)'}</h4>
-                            </div>
-                            </div>
-                            <div className='d-flex m-2 '>
-                            <div className='chart w-100 justify-content-between'>
-                                <img src={oxygen} width="70%" height="60px" style={{marginTop: "35px", marginBottom: "35px"}}/>
-                                <div className='rate_input breath_input'>
-                                <input type='text' value={oxygenPro} onChange={(e) => {setOxygenPro(e.target.value);}} className='rate_text breath_text'/>
-                                <h4 style={{padding:"0", margin:"0", color:"black"}}>{'(%)'}</h4>
-                                </div>
-                            </div>
-                            </div>
-                        </div>
-                        </div>
-                    </div>
-                </div>
+            <div>
+              <button
+                className="send-btn"
+                onClick={handleOnSend}
+                disabled={
+                  iswaiting || tques.trim().replace(/[\r\n]+/gm, "") === ""
+                }
+              >
+                Send
+                <span className="ms-2">
+                  <SendVector />
+                </span>
+              </button>
             </div>
+          </div>
         </div>
-    )
-}
+        <div className="col-4 m-0 p-0">
+          <div className="options">
+            <div className="option-booking">
+              <div className="book-main">
+                <div className="book-main-sub">
+                  <BookLogo />
+                  <label>Dr. Gupta’s Library</label>
+                </div>
+                <div>
+                  <ScheduleBtn
+                    onClick={() => {
+                      setIsSchedule(!isSchedule);
+                    }}
+                  />
+                </div>
+              </div>
+              {isSchedule && (
+                <div className="mt-3">
+                  <div className="calendar-title">
+                    <ScheduleVector />
+                    <div className="d-flex flex-row justify-content-center align-items-center gap-2">
+                      <CalendarVector />
+                      <div className="d-flex flex-column">
+                        <label>Next Checkup</label>
+                        <label>Sat,04 June</label>
+                      </div>
+                    </div>
+                  </div>
+                  <Calendar
+                    onChange={setDate}
+                    value={date}
+                    calendarType="US"
+                    className="w-100 mt-3 border-0"
+                  />
+                </div>
+              )}
+              <div className="book-tip">
+                <span>
+                  <WarningLogo />
+                </span>
+                <label>
+                  After you start your conversation, Dr. Gupta will collect
+                  research materials here.
+                </label>
+              </div>
+            </div>
+            <div className="option-medical-info">
+              <div>
+                <div className="medical-info-title">
+                  <span>
+                    <MedicalLogo />
+                  </span>
+                  <label>Medical Information</label>
+                </div>
+                <div className="medical-info-description">
+                  <label>
+                    Provide your medical information for more personalized and
+                    informative suggestions.
+                  </label>
+                </div>
+                <div className="medical-info-btn">
+                  <label className="switch-imperial">IMPERIAL</label>
+                  <label className="switch-metric">METRIC&nbsp;(SI)</label>
+                </div>
+                <div className="medical-info-drop1">
+                  <div
+                    className="drop-title"
+                    onClick={() => {
+                      setIscore(!iscore);
+                    }}
+                  >
+                    <CoreLogo />
+                    <DropVector />
+                  </div>
+                  {iscore && (
+                    <div className="drop-body">
+                      <Box
+                        sx={{
+                          display: "flex",
+                          flexDirection: "column"
+                        }}
+                      >
+                        <div
+                          className="row d-flex justify-content-between w-100 ms-0 mb-0 gap-3"
+                          style={{ marginTop: "23px" }}
+                        >
+                          <div className="col d-flex justify-content-center align-items-center w-100 m-0 p-0">
+                            <TextField
+                              label="Age"
+                              id="outlined-start-adornment"
+                              focused
+                              color="grey"
+                              sx={{
+                                width: "100%",
+                                margin: "0px",
+                                padding: "0px"
+                              }}
+                              InputProps={{
+                                endAdornment: (
+                                  <InputAdornment position="start">
+                                    yr
+                                  </InputAdornment>
+                                )
+                              }}
+                            />
+                          </div>
+                          <div className="col w-100 m-0 p-0">
+                            <TextField
+                              label="Weight"
+                              id="outlined-start-adornment"
+                              focused
+                              color="grey"
+                              sx={{ width: "100%" }}
+                              InputProps={{
+                                endAdornment: (
+                                  <InputAdornment position="start">
+                                    lb
+                                  </InputAdornment>
+                                )
+                              }}
+                            />
+                          </div>
+                        </div>
+                        <div
+                          className="row d-flex justify-content-between w-100 ms-0 mb-0 gap-3"
+                          style={{ marginTop: "23px" }}
+                        >
+                          <div className="col d-flex justify-content-center align-items-center w-100 m-0 p-0">
+                            <div className="row d-flex justify-content-between w-100 ms-0 mb-0 me-0 gap-3">
+                              <div className="col w-100 m-0 p-0">
+                                <TextField
+                                  label="Height"
+                                  id="outlined-start-adornment"
+                                  focused
+                                  color="grey"
+                                  sx={{ width: "100%" }}
+                                  InputProps={{
+                                    endAdornment: (
+                                      <InputAdornment position="start">
+                                        ft
+                                      </InputAdornment>
+                                    )
+                                  }}
+                                />
+                              </div>
+                              <div className="col w-100 m-0 p-0">
+                                <TextField
+                                  id="outlined-start-adornment"
+                                  focused
+                                  color="grey"
+                                  sx={{ width: "100%" }}
+                                  InputProps={{
+                                    endAdornment: (
+                                      <InputAdornment position="start">
+                                        in
+                                      </InputAdornment>
+                                    )
+                                  }}
+                                />
+                              </div>
+                            </div>
+                          </div>
+                          <div className="col w-100 m-0 p-0">
+                            <TextField
+                              label="Symptoms"
+                              sx={{ width: "100%" }}
+                              variant="filled"
+                            />
+                          </div>
+                        </div>
+                        <div
+                          className="row d-flex justify-content-between w-100 ms-0 mb-0 gap-3"
+                          style={{ marginTop: "23px" }}
+                        >
+                          <div className="col d-flex justify-content-center align-items-center w-100 m-0 p-0">
+                            <TextField
+                              label="Allergies"
+                              sx={{ width: "100%" }}
+                              variant="filled"
+                            />
+                          </div>
+                          <div className="col w-100 m-0 p-0">
+                            <TextField
+                              label="Medication"
+                              sx={{ width: "100%" }}
+                              variant="filled"
+                            />
+                          </div>
+                        </div>
+                      </Box>
+                    </div>
+                  )}
+                </div>
+                <div
+                  className="medical-info-drop2"
+                  onClick={() => {
+                    setIsvitals(!isvitals);
+                  }}
+                >
+                  <div className="drop-title">
+                    <VitalsLogo />
+                    <DropVector />
+                  </div>
+                  {isvitals && (
+                    <div className="drop-body">
+                      <Box
+                        sx={{
+                          display: "flex",
+                          flexDirection: "column"
+                        }}
+                      >
+                        <div
+                          className="row d-flex justify-content-between w-100 ms-0 mb-0 gap-3"
+                          style={{ marginTop: "23px" }}
+                        >
+                          <div className="col d-flex justify-content-center align-items-center w-100 m-0 p-0">
+                            <TextField
+                              label="Temperature"
+                              id="outlined-start-adornment"
+                              focused
+                              color="grey"
+                              sx={{
+                                width: "100%",
+                                margin: "0px",
+                                padding: "0px"
+                              }}
+                              InputProps={{
+                                endAdornment: (
+                                  <InputAdornment position="start">
+                                    F
+                                  </InputAdornment>
+                                )
+                              }}
+                            />
+                          </div>
+                          <div className="col w-100 m-0 p-0">
+                            <TextField
+                              label="Heart Rate"
+                              id="outlined-start-adornment"
+                              focused
+                              color="grey"
+                              sx={{ width: "100%" }}
+                              InputProps={{
+                                endAdornment: (
+                                  <InputAdornment position="start">
+                                    BPM
+                                  </InputAdornment>
+                                )
+                              }}
+                            />
+                          </div>
+                        </div>
+                        <div
+                          className="row d-flex justify-content-between w-100 ms-0 mb-0 gap-3"
+                          style={{ marginTop: "23px" }}
+                        >
+                          <div className="col d-flex justify-content-center align-items-center w-100 m-0 p-0">
+                            <TextField
+                              label="Respiratory Rate"
+                              id="outlined-start-adornment"
+                              focused
+                              color="grey"
+                              sx={{
+                                width: "100%",
+                                margin: "0px",
+                                padding: "0px"
+                              }}
+                              InputProps={{
+                                endAdornment: (
+                                  <InputAdornment position="start">
+                                    Breaths per min
+                                  </InputAdornment>
+                                )
+                              }}
+                            />
+                          </div>
+                          <div className="col w-100 m-0 p-0">
+                            <TextField
+                              label="Oxygen Saturation"
+                              id="outlined-start-adornment"
+                              focused
+                              color="grey"
+                              sx={{ width: "100%" }}
+                              InputProps={{
+                                endAdornment: (
+                                  <InputAdornment position="start">
+                                    lb
+                                  </InputAdornment>
+                                )
+                              }}
+                            />
+                          </div>
+                        </div>
+                        <div
+                          className="row d-flex justify-content-between w-100 ms-0 mb-0 gap-3"
+                          style={{ marginTop: "23px" }}
+                        >
+                          <div className="col d-flex justify-content-center align-items-center w-100 m-0 p-0">
+                            <TextField
+                              label="Waist Circumference"
+                              id="outlined-start-adornment"
+                              focused
+                              color="grey"
+                              sx={{
+                                width: "100%",
+                                margin: "0px",
+                                padding: "0px"
+                              }}
+                              InputProps={{
+                                endAdornment: (
+                                  <InputAdornment position="start">
+                                    in
+                                  </InputAdornment>
+                                )
+                              }}
+                            />
+                          </div>
+                          <div className="col w-100 m-0 p-0">
+                            <TextField
+                              label="Hip Circumference"
+                              id="outlined-start-adornment"
+                              focused
+                              color="grey"
+                              sx={{ width: "100%" }}
+                              InputProps={{
+                                endAdornment: (
+                                  <InputAdornment position="start">
+                                    in
+                                  </InputAdornment>
+                                )
+                              }}
+                            />
+                          </div>
+                        </div>
+                        <div
+                          className="row d-flex justify-content-between w-100 ms-0 mb-0 gap-3"
+                          style={{ marginTop: "23px" }}
+                        >
+                          <div className="col d-flex justify-content-center align-items-center w-100 m-0 p-0">
+                            <TextField
+                              label="Systolic Blood Pressure"
+                              id="outlined-start-adornment"
+                              focused
+                              color="grey"
+                              sx={{
+                                width: "100%",
+                                margin: "0px",
+                                padding: "0px"
+                              }}
+                              InputProps={{
+                                endAdornment: (
+                                  <InputAdornment position="start">
+                                    mmHg
+                                  </InputAdornment>
+                                )
+                              }}
+                            />
+                          </div>
+                          <div className="col w-100 m-0 p-0">
+                            <TextField
+                              label="Diasystolic Blood Pressure"
+                              id="outlined-start-adornment"
+                              focused
+                              color="grey"
+                              sx={{ width: "100%" }}
+                              InputProps={{
+                                endAdornment: (
+                                  <InputAdornment position="start">
+                                    mmHg
+                                  </InputAdornment>
+                                )
+                              }}
+                            />
+                          </div>
+                        </div>
+                      </Box>
+                    </div>
+                  )}
+                </div>
+                <div
+                  className="medical-info-drop3"
+                  onClick={() => {
+                    setIslab(!islab);
+                  }}
+                >
+                  <div className="drop-title">
+                    <LabLogo />
+                    <DropVector />
+                  </div>
+                  {islab && (
+                    <div className="drop-body">
+                      <Box
+                        sx={{
+                          display: "flex",
+                          flexDirection: "column"
+                        }}
+                      >
+                        <div
+                          className="row d-flex justify-content-between w-100 ms-0 mb-0 gap-3"
+                          style={{ marginTop: "23px" }}
+                        >
+                          <div className="col d-flex justify-content-center align-items-center w-100 m-0 p-0">
+                            <TextField
+                              label="Albumin"
+                              id="outlined-start-adornment"
+                              focused
+                              color="grey"
+                              sx={{
+                                width: "100%",
+                                margin: "0px",
+                                padding: "0px"
+                              }}
+                              InputProps={{
+                                endAdornment: (
+                                  <InputAdornment position="start">
+                                    F
+                                  </InputAdornment>
+                                )
+                              }}
+                            />
+                          </div>
+                          <div className="col w-100 m-0 p-0">
+                            <TextField
+                              label="ALT"
+                              id="outlined-start-adornment"
+                              focused
+                              color="grey"
+                              sx={{ width: "100%" }}
+                              InputProps={{
+                                endAdornment: (
+                                  <InputAdornment position="start">
+                                    BPM
+                                  </InputAdornment>
+                                )
+                              }}
+                            />
+                          </div>
+                        </div>
+                        <div
+                          className="row d-flex justify-content-between w-100 ms-0 mb-0 gap-3"
+                          style={{ marginTop: "23px" }}
+                        >
+                          <div className="col d-flex justify-content-center align-items-center w-100 m-0 p-0">
+                            <TextField
+                              label="AST"
+                              id="outlined-start-adornment"
+                              focused
+                              color="grey"
+                              sx={{
+                                width: "100%",
+                                margin: "0px",
+                                padding: "0px"
+                              }}
+                              InputProps={{
+                                endAdornment: (
+                                  <InputAdornment position="start">
+                                    Breaths per min
+                                  </InputAdornment>
+                                )
+                              }}
+                            />
+                          </div>
+                          <div className="col w-100 m-0 p-0">
+                            <TextField
+                              label="BUN"
+                              id="outlined-start-adornment"
+                              focused
+                              color="grey"
+                              sx={{ width: "100%" }}
+                              InputProps={{
+                                endAdornment: (
+                                  <InputAdornment position="start">
+                                    lb
+                                  </InputAdornment>
+                                )
+                              }}
+                            />
+                          </div>
+                        </div>
+                        <div
+                          className="row d-flex justify-content-between w-100 ms-0 mb-0 gap-3"
+                          style={{ marginTop: "23px" }}
+                        >
+                          <div className="col d-flex justify-content-center align-items-center w-100 m-0 p-0">
+                            <TextField
+                              label="Calcium"
+                              id="outlined-start-adornment"
+                              focused
+                              color="grey"
+                              sx={{
+                                width: "100%",
+                                margin: "0px",
+                                padding: "0px"
+                              }}
+                              InputProps={{
+                                endAdornment: (
+                                  <InputAdornment position="start">
+                                    in
+                                  </InputAdornment>
+                                )
+                              }}
+                            />
+                          </div>
+                          <div className="col w-100 m-0 p-0">
+                            <TextField
+                              label="Creatinine"
+                              id="outlined-start-adornment"
+                              focused
+                              color="grey"
+                              sx={{ width: "100%" }}
+                              InputProps={{
+                                endAdornment: (
+                                  <InputAdornment position="start">
+                                    in
+                                  </InputAdornment>
+                                )
+                              }}
+                            />
+                          </div>
+                        </div>
+                        <div
+                          className="row d-flex justify-content-between w-100 ms-0 mb-0 gap-3"
+                          style={{ marginTop: "23px" }}
+                        >
+                          <div className="col d-flex justify-content-center align-items-center w-100 m-0 p-0">
+                            <TextField
+                              label="Glucose"
+                              id="outlined-start-adornment"
+                              focused
+                              color="grey"
+                              sx={{
+                                width: "100%",
+                                margin: "0px",
+                                padding: "0px"
+                              }}
+                              InputProps={{
+                                endAdornment: (
+                                  <InputAdornment position="start">
+                                    mmHg
+                                  </InputAdornment>
+                                )
+                              }}
+                            />
+                          </div>
+                          <div className="col w-100 m-0 p-0">
+                            <TextField
+                              label="HbA1c"
+                              id="outlined-start-adornment"
+                              focused
+                              color="grey"
+                              sx={{ width: "100%" }}
+                              InputProps={{
+                                endAdornment: (
+                                  <InputAdornment position="start">
+                                    mmHg
+                                  </InputAdornment>
+                                )
+                              }}
+                            />
+                          </div>
+                        </div>
+                        <div
+                          className="row d-flex justify-content-between w-100 ms-0 mb-0 gap-3"
+                          style={{ marginTop: "23px" }}
+                        >
+                          <div className="col d-flex justify-content-center align-items-center w-100 m-0 p-0">
+                            <TextField
+                              label="Potassium"
+                              id="outlined-start-adornment"
+                              focused
+                              color="grey"
+                              sx={{
+                                width: "100%",
+                                margin: "0px",
+                                padding: "0px"
+                              }}
+                              InputProps={{
+                                endAdornment: (
+                                  <InputAdornment position="start">
+                                    mmHg
+                                  </InputAdornment>
+                                )
+                              }}
+                            />
+                          </div>
+                          <div className="col w-100 m-0 p-0">
+                            <TextField
+                              label="Sodium"
+                              id="outlined-start-adornment"
+                              focused
+                              color="grey"
+                              sx={{ width: "100%" }}
+                              InputProps={{
+                                endAdornment: (
+                                  <InputAdornment position="start">
+                                    mmHg
+                                  </InputAdornment>
+                                )
+                              }}
+                            />
+                          </div>
+                        </div>
+                        <div
+                          className="row d-flex justify-content-between w-100 ms-0 mb-0 gap-3"
+                          style={{ marginTop: "23px" }}
+                        >
+                          <div className="col d-flex justify-content-center align-items-center w-100 m-0 p-0">
+                            <TextField
+                              label="Triglycerides"
+                              id="outlined-start-adornment"
+                              focused
+                              color="grey"
+                              sx={{
+                                width: "100%",
+                                margin: "0px",
+                                padding: "0px"
+                              }}
+                              InputProps={{
+                                endAdornment: (
+                                  <InputAdornment position="start">
+                                    mmHg
+                                  </InputAdornment>
+                                )
+                              }}
+                            />
+                          </div>
+                          <div className="col w-100 m-0 p-0">
+                            <TextField
+                              label="LDL"
+                              id="outlined-start-adornment"
+                              focused
+                              color="grey"
+                              sx={{ width: "100%" }}
+                              InputProps={{
+                                endAdornment: (
+                                  <InputAdornment position="start">
+                                    mmHg
+                                  </InputAdornment>
+                                )
+                              }}
+                            />
+                          </div>
+                        </div>
+                        <div
+                          className="row d-flex justify-content-between w-100 ms-0 mb-0 gap-3"
+                          style={{ marginTop: "23px" }}
+                        >
+                          <div className="col d-flex justify-content-center align-items-center w-100 m-0 p-0">
+                            <TextField
+                              label="HDL"
+                              id="outlined-start-adornment"
+                              focused
+                              color="grey"
+                              sx={{
+                                width: "100%",
+                                margin: "0px",
+                                padding: "0px"
+                              }}
+                              InputProps={{
+                                endAdornment: (
+                                  <InputAdornment position="start">
+                                    mmHg
+                                  </InputAdornment>
+                                )
+                              }}
+                            />
+                          </div>
+                          <div className="col w-100 m-0 p-0">
+                            <TextField
+                              label="eGFR"
+                              id="outlined-start-adornment"
+                              focused
+                              color="grey"
+                              sx={{ width: "100%" }}
+                              InputProps={{
+                                endAdornment: (
+                                  <InputAdornment position="start">
+                                    mmHg
+                                  </InputAdornment>
+                                )
+                              }}
+                            />
+                          </div>
+                        </div>
+                      </Box>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div ref={ref2} />
+    </>
+  );
+};
 
 export default Content;

@@ -1,16 +1,24 @@
-import React from 'react'
-import ButtonAppBar from '../components/ButtonAppBar';
-import '../App.css';
-import { Navigate, useNavigate } from 'react-router-dom';
+import React from "react";
+import Header from "../components/Header";
+import "./Homescreen.css";
+import { useNavigate } from "react-router-dom";
 
 export default function Homescreen() {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   return (
-    <div className='backgroun-image'>
+    <div className="background-image">
       <div>
-        <ButtonAppBar />
+        <Header />
       </div>
-      <button type='button' onClick={()=>{navigate('/login')}} className='btn-home'>GET STARTED</button>
+      <button
+        type="button"
+        onClick={() => {
+          navigate("/login");
+        }}
+        className="btn-home"
+      >
+        GET STARTED
+      </button>
     </div>
-  )
+  );
 }
